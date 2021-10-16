@@ -1,0 +1,219 @@
+{% extends 'layout.html' %}
+
+{% block results %}
+
+<br>
+<div class="container">
+    <h3><sup>{{title}}</sup></h3>
+    <!-- check if user logged in -->
+    {% if session['userid'] %}
+    {% if data %}
+    <p class="text-light">Below there are charts and tables of the selected data</p>
+
+
+
+<table class="table table-sm table-hover text-center">
+    <thead><tr>
+        <th>Years</th>
+        <th>Investment</th>
+        <th>Corporate earnings / Year</th>
+        <th>Start of earnings</th>
+        <th>Interest rate</th>
+        <th>Deposit</th>
+        <th>Year of deposit return</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}<tr>
+        <td> {{ row.years }}</td>
+        <td> {{ row.ependusi }}</td>
+        <td> {{ row.esoda_xrono }}</td>
+        <td> {{ row.arxi_esodwn}}</td>
+        <td> {{ row.pososto }}</td>
+        <td> {{ row.egguisi }}</td>
+        <td> {{ row.etos_egguisis }}</td>
+    </tr>
+    </tbody>{% endfor %}
+</table>
+    <hr><br>
+</div>
+
+
+
+<h4 class="text-center">ROI Chart</h4>
+<center>
+<canvas id="chart" width="1200" height="400"></canvas>
+<script>
+  // bar chart data
+  var barData = {
+    labels : [
+      {% for item in labels %}
+        "{{ item }}",
+      {% endfor %}
+    ],
+    datasets : [{
+      fillColor: "rgba(151,187,205,0.2)",
+      strokeColor: "rgba(151,187,205,1)",
+      pointColor: "rgba(151,187,205,1)",
+      pointStrokeColor: "#ffffff",
+      pointHighlightFill: "#ffffff",
+      pointHighlightStroke: "rgba(151,187,205,1)",
+      bezierCurve : false,
+      data : [
+    {% for item in values1 %}
+          {{ item }},
+        {% endfor %}]
+      }
+]
+  }
+  Chart.defaults.global.animationSteps = 5;
+  Chart.defaults.global.tooltipYPadding = 16;
+  Chart.defaults.global.tooltipCornerRadius = 0;
+  Chart.defaults.global.tooltipTitleFontStyle = "normal";
+  Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+  Chart.defaults.global.animationEasing = "easeOutBounce";
+  Chart.defaults.global.responsive = false;
+  Chart.defaults.global.scaleLineColor = "black";
+  Chart.defaults.global.scaleFontSize = 20;
+  // get bar chart canvas
+  var mychart = document.getElementById("chart").getContext("2d");
+  steps = 5
+  max = {{ max1 }}
+  min = {{ min1 }}
+  // draw bar chart
+  var LineChartDemo = new Chart(mychart).Line(barData, {
+    scaleOverride: false,
+    scaleSteps: steps,
+    scaleStepWidth: Math.ceil(max / steps),
+    scaleStartValue: min,
+    scaleShowVerticalLines: true,
+    scaleShowGridLines : true,
+    barShowStroke : true,
+    scaleShowLabels: true,
+    bezierCurve: false,
+  });
+</script>
+</center>
+
+<hr><br>
+
+<h4 class="text-center">NPV Chart</h4>
+<center>
+<canvas id="chart2" width="1200" height="400"></canvas>
+<script>
+  // bar chart data
+  var barData = {
+    labels : [
+      {% for item in labels %}
+        "{{ item }}",
+      {% endfor %}
+    ],
+    datasets : [{
+      fillColor: "rgba(151,187,205,0.2)",
+      strokeColor: "rgba(151,187,205,1)",
+      pointColor: "rgba(151,187,205,1)",
+      pointStrokeColor: "#ffffff",
+      pointHighlightFill: "#ffffff",
+      pointHighlightStroke: "rgba(151,187,205,1)",
+      bezierCurve : false,
+      data : [
+    {% for item in values2 %}
+          {{ item }},
+        {% endfor %}]
+      }
+]
+  }
+  Chart.defaults.global.animationSteps = 5;
+  Chart.defaults.global.tooltipYPadding = 16;
+  Chart.defaults.global.tooltipCornerRadius = 0;
+  Chart.defaults.global.tooltipTitleFontStyle = "normal";
+  Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+  Chart.defaults.global.animationEasing = "easeOutBounce";
+  Chart.defaults.global.responsive = false;
+  Chart.defaults.global.scaleLineColor = "black";
+  Chart.defaults.global.scaleFontSize = 20;
+  // get bar chart canvas
+  var mychart2 = document.getElementById("chart2").getContext("2d");
+  steps = 8
+  max = {{ max2 }}
+  min = {{ min2 }}
+  // draw bar chart
+  var LineChartDemo = new Chart(mychart2).Line(barData, {
+    scaleOverride: false,
+    scaleSteps: steps,
+    scaleStepWidth: Math.ceil(max / steps),
+    scaleStartValue: min,
+    scaleShowVerticalLines: true,
+    scaleShowGridLines : true,
+    barShowStroke : true,
+    scaleShowLabels: true,
+    bezierCurve: false,
+  });
+</script>
+</center>
+
+<hr><br>
+
+<div class="container">
+    <h4><sup>The year of depreciation is <b>{% for row in depre %}
+        Year {{ row.depre_year }}
+      {% endfor %}</b>.</sup></h4>
+    <p class="text-light">Below there are the resulted data</p><hr>
+    <div class="row">
+    <div class="col">
+<table class="table table-sm table-hover text-center">
+    <thead>
+      <tr>
+        <th>Years</th>
+        <th>ROI</th>
+      </tr>
+    </thead>
+<tbody>
+{%for i in range(0, len1)%}
+    <tr>
+        <td>Year {{i}}</td>
+        <td>{{roi[i]}} %</td>
+    </tr>
+
+</tbody>
+
+{%endfor%}
+
+</table>
+    </div>
+    <div class="col">
+<table class="table table-sm table-hover text-center">
+    <thead>
+      <tr>
+        <th>Years</th>
+        <th>NPV</th>
+      </tr>
+    </thead>
+<tbody>
+{%for i in range(0, len2)%}
+    <tr>
+        <td>Year {{i}}</td>
+        <td>{{npv[i]}} €</td>
+    </tr>
+
+</tbody>
+
+{%endfor%}
+
+</table>
+</div>
+</div>
+</div>
+
+
+
+{% endif %}
+{% else %}
+
+
+<h4 class="text-center bg-danger text-white">Not logged in</h4>
+
+
+{% endif %}
+
+{% endblock %}

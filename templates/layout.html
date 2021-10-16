@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Python App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">     <!--css.css document-->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"> <!-- font-awesome-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> <!--bootstrap-->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script> <!--bar-->
+</head>
+<style>
+body {
+    background-image: url("static/img/back1.jpg")
+}
+
+.dashboard {
+    background-image: url("static/img/back2.jpg")
+}
+
+.nav-link {
+    cursor:pointer;
+}
+
+.carousel-inner{
+  width:100%;
+  max-height: 100vh !important;
+}
+
+.carousel-caption {
+    top: 10vh;
+    bottom: auto;
+    color: black;
+}
+</style>
+
+<body>
+
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-dark border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading text-secondary fa fa-grav">&nbsp;Python Application</div><hr>
+      <div class="list-group list-group-flush">
+        <a href="{{ url_for('home') }}" class="list-group-item list-group-item-action bg-dark text-light fa fa-home"> &nbsp;&nbsp;Home</a>
+          {% if session['userid'] %}
+          <a href="/form" class="list-group-item list-group-item-action bg-dark text-light fa fa-list"> &nbsp;&nbsp;Form</a>
+          <a href="/results" class="list-group-item list-group-item-action bg-dark text-light fa fa-area-chart"> &nbsp;&nbsp;Charts</a>
+          <a href="/data" class="list-group-item list-group-item-action bg-dark text-light fa fa-table"> &nbsp;&nbsp;My data</a>
+          {% if session['role']=='admin' %}
+          <li class="dropdown">
+            <a class="dropdown-toggle list-group-item list-group-item-action bg-dark text-light fa fa-tachometer" data-toggle="dropdown" href="#"> &nbsp;&nbsp;Dashboard
+            <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="/analytics" class="list-group-item list-group-item-action bg-dark text-light fa fa-bar-chart"> &nbsp;&nbsp;Analytics</a></li>
+              <li><a href="/manage" class="list-group-item list-group-item-action bg-dark text-light fa fa-cog"> &nbsp;&nbsp;Manage Users</a></li>
+            </ul>
+          </li>
+          {% endif %}
+          {% else %}
+          {% endif %}
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
+        <button class="btn btn-info fa fa-exchange" aria-hidden="true" id="menu-toggle"> Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+              {% if session['fname'] %}
+			 <form class="navbar-form navbar-right" action="logout" method="post">
+                 <button type="submit" name="logout-submit" class="btn btn-outline-light fa fa-sign-out"> Logout</button>
+             </form>
+                {% else %}
+			<li><a class="nav-link fa fa-user-plus" data-toggle="modal" data-target="#myModal_reg">&nbsp;Sing Up</a></li>
+			<li><a class="nav-link fa fa-sign-in" data-toggle="modal" data-target="#myModal_login">&nbsp;Login</a></li>
+          </ul>
+            {% endif %}
+        </div>
+      </nav>
+
+<div class="container">
+  <!-- The Modal -->
+    <div class="modal fade" id="myModal_login">
+        <div class="modal-dialog">
+          <div class="modal-content text-light bg-dark">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Login</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                {% with messages = get_flashed_messages(category_filter=['login']) %}
+                    {% if messages %}
+                <script>
+                            $(document).ready(function(){
+                            $("#myModal_login").modal("show");
+                            });
+                </script>
+                <div class="bg-danger text-white text-center">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+                    {% endif %}
+                {% endwith %}
+
+
+                <div class="signin-form">
+                <form action="/login" method="post">
+                    <p class="hint-text">If you have already an account please log in.</p>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" name="login-submit" class="btn btn-info btn-lg btn-block">Log In</button>
+                </div>
+                        </form>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+  <!-- The Modal -->
+    <div class="modal fade" id="myModal_reg">
+        <div class="modal-dialog">
+            <div class="modal-content text-light bg-dark">
+            <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Register</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+            <!-- Modal body -->
+
+                <div class="modal-body">
+
+        {% with messages = get_flashed_messages(category_filter=['reg']) %}
+                    {% if messages %}
+                    <script>
+                                $(document).ready(function(){
+                                $("#myModal_reg").modal("show");
+                                });
+                    </script>
+
+                    <div class="bg-danger text-white text-center">
+
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+
+                    </div>
+         {% endif %}
+      {% endwith %}
+
+
+
+
+
+    <!---sign up form -->
+                    <div class="signup-form">
+                        <form action="/register" method="post">
+                            <p class="hint-text">Create your account. It's free and only takes a minute.</p>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+                                <small class="form-text text-muted">First name must be 2-15 characters long</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+                                <small class="form-text text-muted">Last name must be 2-15 characters long</small>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" name="email" placeholder="Email" required>
+                                <small class="form-text text-muted">Valid email format needed</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="password" placeholder="Password" required>
+                                <small class="form-text text-muted">Password must be 6-20 characters long</small>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="conf_password" placeholder="Confirm Password" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-inline"><input type="checkbox" required> I accept the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a></label>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-info btn-lg btn-block">Register Now</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block content %}
+{% endblock %}
+
+  {% block form %}
+{% endblock %}
+
+  {% block manage %}
+{% endblock %}
+
+  {% block analytics %}
+{% endblock %}
+
+    {% block results %}
+{% endblock %}
+
+  {% block data %}
+{% endblock %}
+
+
+    <!-- /#page-content-wrapper -->
+
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+
+  </div>
+</body>
+
+</html>

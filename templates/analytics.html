@@ -1,0 +1,153 @@
+{% extends 'layout.html' %}
+
+{% block analytics %}
+
+<div class="dashboard">
+<br>
+<div class="container">
+    <!-- check if user is a admin -->
+    {% if session['role']=='admin' %}
+    <h3><sup>DASHBOARD</sup></h3><hr>
+
+
+    <div class="row">
+        <div class="col">
+            <h4 class="text-center">General Info</h4><br>
+            <div class="alert alert-light" role="alert">
+                <p class="text-center">There are <b>{{ users }}</b> register  users!</p>
+            </div>
+            <div class="alert alert-secondary" role="alert">
+                <p class="text-center">There are <b>{{ data }}</b> register data!</p>
+            </div>
+        </div>
+    <div class="col">
+    <h4 class="text-center">Admins / User Pie</h4><br>
+        <center>
+    <canvas id="chart" width="200" height="200"></canvas>
+    <script>
+      var pieData = [
+        {% for item, label, colors in set %}
+          {
+            value: {{item}},
+            label: "{{label}}",
+            color : "{{colors}}"
+          },
+        {% endfor %}
+      ];
+      // get bar chart canvas
+      var mychart = document.getElementById("chart").getContext("2d");
+      steps = 10
+      max = {{ max }}
+      // draw pie chart
+      new Chart(document.getElementById("chart").getContext("2d")).Pie(pieData);
+    </script>
+        </center>
+    </div>
+    </div>
+    <hr>
+</div>
+
+
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h4 class="text-center">Users Registrations Per Month</h4><br>
+        <canvas id="chart3" width="500" height="400"></canvas>
+        <script>
+          // bar chart data
+          var barData = {
+            labels : [
+              {% for item in datau %}
+               "{{ item.month }}",
+              {% endfor %}
+        ],
+            datasets : [{
+              fillColor: "rgba(254, 254, 254,0.5)",
+              strokeColor: "rgba(254, 254, 254,1)",
+              pointColor: "rgba(254, 254, 254,1)",
+              data : [
+                {% for item in datau %}
+                   "{{ item.ID }}",
+                  {% endfor %}
+            ]
+              }
+            ]
+          }
+         // get bar chart canvas
+         var mychart1 = document.getElementById("chart3").getContext("2d");
+           steps = 10
+           max = {{max}}
+         // draw bar chart
+         new Chart(mychart1).Bar(barData, {
+           scaleOverride: true,
+           scaleSteps: steps,
+           scaleStepWidth: Math.ceil(max / steps),
+           scaleStartValue: 0,
+           scaleShowVerticalLines: true,
+           scaleShowGridLines : true,
+           barShowStroke : true,
+           scaleShowLabels: true
+           }
+         );
+        </script>
+        </div>
+
+        <div class="col">
+        <h4 class="text-center">Data Created Per Month</h4><br>
+    <center>
+            <canvas id="chart2" width="500" height="400"></canvas>
+            <script>
+              // bar chart data
+              var barData = {
+                labels : [
+                  {% for item in datad %}
+                   "{{ item.month }}",
+                  {% endfor %}
+            ],
+                datasets : [{
+                  fillColor: "rgba(41, 43, 44,0.5)",
+                  strokeColor: "rgba(41, 43, 44,1)",
+                  pointColor: "rgba(41, 43, 44,1)",
+                  data : [
+                    {% for item in datad %}
+                       "{{ item.ID }}",
+                      {% endfor %}
+                ]
+                  }
+                ]
+              }
+             // get bar chart canvas
+             var mychart = document.getElementById("chart2").getContext("2d");
+               steps = 10
+               max = {{max}}
+             // draw bar chart
+             new Chart(mychart).Bar(barData, {
+               scaleOverride: true,
+               scaleSteps: steps,
+               scaleStepWidth: Math.ceil(max / steps),
+               scaleStartValue: 0,
+               scaleShowVerticalLines: true,
+               scaleShowGridLines : true,
+               barShowStroke : true,
+               scaleShowLabels: true
+               }
+             );
+            </script>
+        </center>
+
+        </div>
+</div>
+</div>
+
+{% else %}
+
+<h4 class="text-center bg-danger text-white">Access Denied</h4>
+
+{% endif %}
+
+</div>
+{% endblock %}

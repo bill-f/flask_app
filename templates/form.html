@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+
+{% block form %}
+
+<br>
+<div class="container">
+  <!-- check if user logged in -->
+    {% if session['userid'] %}
+  <h5> Welcome {{ session['fname'] }} {{ session['lname'] }}, </h5>
+  <p class="text-light">Complete the form below to create your model and get the additional results.</p>
+  <hr>
+  <div class="row">
+    <div class="col">
+      <!-- error messages -->
+      {% with messages = get_flashed_messages(category_filter=['form']) %}
+        {% if messages %}
+          <div class="bg-danger text-white text-center">
+              {% for message in messages %}
+                  <p>{{ message }}</p>
+              {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+        <h4 class="text-center">Create a new model<br></h4><hr>
+      <form action="/program" method="post">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label>Years</label>
+            <input type="number" min="0" class="form-control" name="years" placeholder="Years" required>
+            <small class="form-text text-muted">0-30</small>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Investment</label>
+            <input type="number" min="0" step="0.0001" class="form-control" name="ependusi" placeholder="Investment" required>
+            <small class="form-text text-muted">0-1000000</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Corporate earnings / Year</label>
+          <input type="number" min="0" step="0.0001" class="form-control" name="esoda_xrono" placeholder="Corporate earnings / Year" required>
+          <small class="form-text text-muted">0-1000000</small>
+        </div>
+        <div class="form-group">
+          <label>Start of earnings</label>
+          <input type="number" min="0" class="form-control" name="arxi_esodwn" placeholder="Start of earnings" required>
+          <small class="form-text text-muted">0-30</small>
+        </div>
+        <div class="form-group">
+          <label>Interest rate</label>
+          <input type="number" min="0" step="0.0001" class="form-control" name="pososto" placeholder="Interest rate" required>
+          <small class="form-text text-muted">0-10</small>
+        </div>
+        <div class="form-group">
+          <label>Deposit</label>
+          <input type="number" min="0" step="0.0001" class="form-control" name="egguisi" placeholder="Deposit" required>
+          <small class="form-text text-muted">0-1000000</small>
+        </div>
+        <div class="form-group">
+          <label>Year of deposit return</label>
+          <input type="number" min="0" class="form-control" name="etos_egguisis" placeholder="Year of deposit return" required>
+          <small class="form-text text-muted">0-30</small>
+        </div>
+        <div class="form-group"><br>
+          <button type="submit" class="btn btn-dark btn-lg btn-block">Submit</button>
+          <hr>
+        </div>
+      </form>
+    </div>
+    <div class="col"><br><br>
+      <img src="{{ url_for('static', filename='img/form2.jpg') }}" class="img-fluid" alt="Responsive image">
+      <hr>
+      <img src="{{ url_for('static', filename='img/form1.jpg') }}" class="img-fluid" alt="Responsive image">
+    </div>
+  </div>
+</div>
+
+{% else %}
+
+
+<h4 class="text-center bg-danger text-white">Not logged in</h4>
+
+
+{% endif %}
+
+{% endblock %}

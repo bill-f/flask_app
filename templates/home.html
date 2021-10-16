@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item text-center active">
+      <img class="d-block w-100" src="{{ url_for('static', filename='img/home1.jpg') }}" alt="First slide">
+        <div class="carousel-caption d-none d-md-block">
+            <h2 class="text-light">Python Application</h2>
+            <p>Welcome to python app!</p>
+        </div>
+    </div>
+    <div class="carousel-item text-center">
+      <img class="d-block w-100" src="{{ url_for('static', filename='img/home2.jpg') }}" alt="First slide">
+        <div class="carousel-caption d-none d-md-block">
+            <h2 class="text-light">Python Application</h2>
+            <p>Welcome to python app!</p>
+        </div>
+    </div>
+    <div class="carousel-item text-center">
+      <img class="d-block w-100" src="{{ url_for('static', filename='img/home3.jpg') }}" alt="First slide">
+        <div class="carousel-caption d-none d-md-block">
+            <h2 class="text-secondary">Python Application</h2>
+            <p>Welcome to python app!</p>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

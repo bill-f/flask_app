@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+
+{% block data %}
+
+
+<br>
+<div class="container">
+    <!-- check if user logged in -->
+    {% if session['userid'] %}
+    <h3><sup>MY MODELS</sup></h3><hr>
+
+<!-- modal for delete flash message -->
+    <div class="container">
+  <!-- The Modal -->
+        <div class="modal fade" id="myModal_delete">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content text-light bg-dark">
+                  <!-- Modal Header -->
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <script>
+                                    $(document).ready(function(){
+                                    $("#myModal_delete").modal("show");
+                                    });
+                        </script>
+                        <div class="bg-success text-white text-center">
+                            {% for message in messages %}
+                                <p><br>{{ message }}<br><br></p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    {% if datass %}
+<table class="table table-sm table-hover text-center">
+    <thead><tr>
+        <th>ID</th>
+        <th>Years</th>
+        <th>Investment</th>
+        <th>Corporate earnings / Year</th>
+        <th>Start of earnings</th>
+        <th>Interest rate</th>
+        <th>Deposit</th>
+        <th>Year of deposit return</th>
+        <th>Reg date</th>
+        <th class="table-info">View</th>
+        <th class="table-danger">Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for row in datass %}<tr>
+        <form action='/data' method='POST'>
+        <input name='data_id' type='hidden' value="{{ row.id }} ">
+        <td scope="row"> {{ row.id }} </td>
+        <td>{{ row.years }} </td>
+        <td>{{ row.ependusi }}</td>
+        <td> {{ row.esoda_xrono }}</td>
+        <td> {{ row.arxi_esodwn}}</td>
+        <td> {{ row.pososto }}</td>
+        <td> {{ row.egguisi }}</td>
+        <td> {{ row.etos_egguisis }}</td>
+        <td> {{ row.reg_date }}</td>
+            <td><button type='submit' name='submit_button' value='view' class='btn btn-info btn-sm'>View</button></td>
+        <td><button type='submit' name='submit_button' value='delete' class='btn btn-danger btn-sm'>Delete</button></td>
+        </form>
+    </tr>
+    </tbody>
+        {% endfor %}</table>
+    {% endif %}
+</div>
+
+
+{% else %}
+
+
+<h4 class="text-center bg-danger text-white">Not logged in</h4>
+
+
+{% endif %}
+
+{% endblock %}
